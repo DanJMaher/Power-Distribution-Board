@@ -16,9 +16,14 @@ void loop() {
   Supervision::pwrButtonRead();
   
   if(millis() - prevMillis > sendInterval && !responseExpected){
-    Comm::createJson();
+    Supervision::supervise();
     Comm::sendJson(&Serial);
     prevMillis = millis();
   }
   Comm::checkSerialBuffer(&Serial);
 }
+
+
+
+//Check power button (persistant)
+//check voltage & send json every n seconeds

@@ -1,27 +1,18 @@
 #include "comm.h"
 
-/** Records values to the json document
- */
-static void Comm::createJson(){
-  // Record current voltage
-  transmitDoc["voltage"][0] = Supervision::readVoltage(monitorPin_11v, monitorCtrlPin_11v, maxVolts_11v);
-  transmitDoc["voltage"][1] = Supervision::readVoltage(monitorPin_22v, monitorCtrlPin_22v, maxVolts_22v);
-
-  // Record current relay status
-  transmitDoc["relay"][0] = digitalRead(relayPin_11v);
-  transmitDoc["relay"][1] = digitalRead(relayPin_22v);
+static void Comm::appendJson(String tag, int index, float value){
+  transmitDoc[tag][index] = value;
+}
+static void Comm::appendJson(String tag, int index, bool value){
+  transmitDoc[tag][index] = value;
 }
 
-/** Serializes and transmits json doc
- */
 static void Comm::sendJson(HardwareSerial *serPtr){
     serializeJson(transmitDoc, *serPtr);
     serPtr->println();    
     responseExpected = true;
 }
 
-/** Checks the USB serial port for a command
- */
 static void Comm::checkSerialBuffer(HardwareSerial *serPtr){
   if(serPtr->available() < 1)
     return;

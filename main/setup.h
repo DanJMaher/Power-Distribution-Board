@@ -34,6 +34,11 @@ extern const float maxVolts_11v;
 extern const float maxVolts_22v;
 extern const float analogMax;
 
+// Lower voltage limits before system automatically
+// powers down
+extern const float cuttoffVolts_11v;
+extern const float cuttoffVolts_22v;
+
 // Time tracking
 extern unsigned long prevMillis;
 // Time between sending json doc via serial in milliseconds
