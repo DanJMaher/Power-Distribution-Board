@@ -42,13 +42,17 @@ const float maxVolts_22v = 25.0;
 const float analogMax = 1023.0;
 
 // Time tracking
-int prevMillis = 0;
+unsigned long prevMillis = 0;
 // Time between sending json doc via serial in milliseconds
-int sendInterval = 1000;
+const int sendInterval = 1000;
 
-// Allocate space for arduinoJson document object
-StaticJsonDocument<256> doc;  //NEED TO GET MORE ACCURATE ALLOCATION SIZE
-                              //https://arduinojson.org/v6/assistant/
+// Allocates space for arduinoJson document object. Bool to track if a message has been sent. but a response has not yet occurred.
+// Limit for system to track if comm fails are a problem.
+StaticJsonDocument<256> transmitDoc;  //NEED TO GET MORE ACCURATE ALLOCATION SIZE https://arduinojson.org/v6/assistant/
+StaticJsonDocument<256> receiveDoc;
+bool responseExpected = false;
+int commFailCount = 0;
+const int commFailLimit = 3;
 
 void setup() {
   Serial.begin(9600);
@@ -61,6 +65,7 @@ void setup() {
   pinMode(monitorPin_11v,INPUT);
   pinMode(relayPin_11v, OUTPUT);
   pinMode(ledPin_11v, OUTPUT);
+  digitalWrite(monitorCtrlPin_11v, LOW);
   digitalWrite(relayPin_11v, HIGH);
 
   pinMode(monitorCtrlPin_22v, OUTPUT);
@@ -72,13 +77,14 @@ void setup() {
 
 void loop() {
   pwrButtonRead();
+
   
-  if(millis() - prevMillis > sendInterval){
+  if(millis() - prevMillis > sendInterval && !responseExpected){
     createJson();
     sendJson();
     prevMillis = millis();
   }
-  
+  checkSerialBuffer();
 }
 
 /** Checks to see if power button is pressed. If so, cuts power to relay
@@ -100,24 +106,59 @@ void pwrButtonRead() {
  */
 void createJson(){
   // Record current voltage
-  doc["voltage"][0] = mapVoltage(monitorPin_11v, maxVolts_11v);
-  doc["voltage"][1] = mapVoltage(monitorPin_22v, maxVolts_22v);
+  transmitDoc["voltage"][0] = readVoltage(monitorPin_11v, monitorCtrlPin_11v, maxVolts_11v);
+  transmitDoc["voltage"][1] = readVoltage(monitorPin_22v, monitorCtrlPin_22v, maxVolts_22v);
 
   // Record current relay status
-  doc["relay"][0] = digitalRead(relayPin_11v);
-  doc["relay"][1] = digitalRead(relayPin_22v);
+  transmitDoc["relay"][0] = digitalRead(relayPin_11v);
+  transmitDoc["relay"][1] = digitalRead(relayPin_22v);
+
+  Serial.flush();
 }
 
 /** Serializes and transmits json doc
  */
 void sendJson(){
-    serializeJson(doc, Serial);
-    Serial.println();
+    serializeJson(transmitDoc, Serial);
+    Serial.println();    
+    Serial.flush();
+    responseExpected = true;
 }
+
+/** Checks the USB serial port for a command
+ */
+void checkSerialBuffer(){
+  if(Serial.available() < 1)
+    return;
+
+  parseSerial();
+}
+
+void parseSerial(){
+  DeserializationError err = deserializeJson(receiveDoc, Serial.readString());
+  if(err) {
+    //ADD ERROR HANDLING HERE
+    return;
+  }
+  if(responseExpected)
+    if(receiveDoc["alive"]){
+      responseExpected = false;
+      commFailCount = 0;
+    }else if(commFailCount == commFailLimit){
+      // COMM FAIL ACTION
+    }else{
+      commFailCount++;
+    }
+    
+  // ADD REMOTE COMMAND HANDLING HERE
+}
+
 
 /** Maps analog input to real voltage values
  */
-float mapVoltage(int voltagePin, float outMax) {
+float readVoltage(int voltagePin, int ctrlPin, float outMax) {
+  digitalWrite(ctrlPin, HIGH);
   float input = analogRead(voltagePin);
+  digitalWrite(ctrlPin, LOW);
   return (input * outMax) / analogMax;
 }
