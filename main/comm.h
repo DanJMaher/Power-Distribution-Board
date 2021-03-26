@@ -7,8 +7,8 @@
 class Comm{
   public:
   static void createJson();
-  static void sendJson();
-  static void checkSerialBuffer();
-  static void parseSerial();
+  static void sendJson(HardwareSerial *serPtr);
+  static void checkSerialBuffer(HardwareSerial *serPtr);
+  static void parseSerial(HardwareSerial *serPtr);
 };
 #endif

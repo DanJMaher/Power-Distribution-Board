@@ -14,23 +14,23 @@ static void Comm::createJson(){
 
 /** Serializes and transmits json doc
  */
-static void Comm::sendJson(){
-    serializeJson(transmitDoc, Serial);
-    Serial.println();    
+static void Comm::sendJson(HardwareSerial *serPtr){
+    serializeJson(transmitDoc, *serPtr);
+    serPtr->println();    
     responseExpected = true;
 }
 
 /** Checks the USB serial port for a command
  */
-static void Comm::checkSerialBuffer(){
-  if(Serial.available() < 1)
+static void Comm::checkSerialBuffer(HardwareSerial *serPtr){
+  if(serPtr->available() < 1)
     return;
 
-  parseSerial();
+  parseSerial(serPtr);
 }
 
-static void Comm::parseSerial(){
-  DeserializationError err = deserializeJson(receiveDoc, Serial.readString());
+static void Comm::parseSerial(HardwareSerial *serPtr){
+  DeserializationError err = deserializeJson(receiveDoc, serPtr->readString());
   if(err) {
     //ADD ERROR HANDLING HERE
     return;
@@ -45,5 +45,5 @@ static void Comm::parseSerial(){
       commFailCount++;
     }
     
-  // ADD REMOTE COMMAND HANDLING HERE
+  // ADD COMMAND HANDLING HERE
 }

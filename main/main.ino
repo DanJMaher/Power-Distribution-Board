@@ -14,12 +14,11 @@
 
 void loop() {
   Supervision::pwrButtonRead();
-
   
   if(millis() - prevMillis > sendInterval && !responseExpected){
     Comm::createJson();
-    Comm::sendJson();
+    Comm::sendJson(&Serial);
     prevMillis = millis();
   }
-  Comm::checkSerialBuffer();
+  Comm::checkSerialBuffer(&Serial);
 }
