@@ -6,6 +6,17 @@ Data::Data(){
   relay_11 = 0;
   relay_22 = 0;
 }
+
+void Data::storeTime(unsigned long t){
+  storedTime = t;
+  storedMillis = millis();
+}
+
+unsigned long Data::retrieveTime(){
+  unsigned long currentTime = storedTime + (millis() - storedMillis)/1000;
+  return currentTime;
+}
+
 void Data::storeVoltage_11(float v){voltage_11 = v;}
 void Data::storeVoltage_22(float v){voltage_22 = v;}
 void Data::storeRelayStatus_11(bool r){relay_11 = r;}

@@ -48,7 +48,7 @@ static void Supervision::powerDown(){
   digitalWrite(relayPin_11v, LOW);
   digitalWrite(relayPin_22v, LOW);
 
-  Comm::sendJson(&Serial);
+  Comm::sendData(&Serial);
   digitalWrite(keepOnPin, LOW);
     
   while(1){

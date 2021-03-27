@@ -14,10 +14,10 @@ const int relayPin_11v = 41;
 const int ledPin_11v = 39;
 
 // 22.2V pins
-const int monitorCtrlPin_22v = 22;
-const int monitorPin_22v = A0;
-const int relayPin_22v = 41;
-const int ledPin_22v = 39;
+const int monitorCtrlPin_22v = 23;
+const int monitorPin_22v = A1;
+const int relayPin_22v = 25;
+const int ledPin_22v = 27;
 
 /******************************/
 /**********GLOBALS*************/
@@ -35,7 +35,7 @@ extern const float cuttoffVolts_22v = 17.0;
 // Time tracking
 unsigned long prevMillis = 0;
 // Time between sending json doc via serial in milliseconds
-const int sendInterval = 1000;
+const int sendInterval = 100;
 
 //Bool to track if a message has been sent. but a response has not yet occurred.
 // Limit for system to track if comm fails are a problem.
@@ -64,4 +64,6 @@ void setup() {
   pinMode(relayPin_22v, OUTPUT);
   pinMode(ledPin_22v, OUTPUT);
   digitalWrite(relayPin_22v, HIGH);
+
+  Comm::requestTime(&Serial);
 }

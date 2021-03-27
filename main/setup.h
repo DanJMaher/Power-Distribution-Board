@@ -7,6 +7,7 @@
 #include <ArduinoJson.h>
 #include "supervision.h"
 #include "data.h"
+#include "comm.h"
 
 /******************************/
 /*********PIN NAMES************/

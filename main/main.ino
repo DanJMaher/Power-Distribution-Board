@@ -17,7 +17,7 @@ void loop() {
   
   if(millis() - prevMillis > sendInterval && !responseExpected){
     Supervision::supervise();
-    Comm::sendJson(&Serial);
+    Comm::sendData(&Serial);
     prevMillis = millis();
   }
   Comm::checkSerialBuffer(&Serial);

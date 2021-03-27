@@ -1,19 +1,27 @@
 #include "comm.h"
 
-static void Comm::sendJson(HardwareSerial *serPtr){
-    StaticJsonDocument<256> doc;                      //NEED TO GET MORE ACCURATE ALLOCATION SIZE https://arduinojson.org/v6/assistant/
+static void Comm::sendJson(HardwareSerial *serPtr, JsonDocument *doc){
+  serializeJson(*doc, *serPtr);
+  serPtr->println();    
+  responseExpected = true;
+}
 
-    //MAKE SEPARATE FUNCTION
-    doc["voltage"][0] = data.retrieveVoltage_11();
-    doc["voltage"][1] = data.retrieveVoltage_22();
-    doc["relay"][0] = data.retrieveRelay_11();
-    doc["relay"][1] = data.retrieveRelay_22();
-    ////////////////////////
+static void Comm::sendData(HardwareSerial *serPtr){
+  StaticJsonDocument<256> doc;                      //NEED TO GET MORE ACCURATE ALLOCATION SIZE https://arduinojson.org/v6/assistant/
 
-    
-    serializeJson(doc, *serPtr);
-    serPtr->println();    
-    responseExpected = true;
+  doc["time"] = data.retrieveTime();
+  doc["voltage"][0] = data.retrieveVoltage_11();
+  doc["voltage"][1] = data.retrieveVoltage_22();
+  doc["relay"][0] = data.retrieveRelay_11();
+  doc["relay"][1] = data.retrieveRelay_22();
+
+  Comm::sendJson(serPtr, &doc);
+}
+
+static void Comm::requestTime(HardwareSerial *serPtr){
+  StaticJsonDocument<256> doc;                      //NEED TO GET MORE ACCURATE ALLOCATION SIZE https://arduinojson.org/v6/assistant/
+  doc["request"] = "time";
+  Comm::sendJson(serPtr, &doc);
 }
 
 static void Comm::checkSerialBuffer(HardwareSerial *serPtr){
@@ -30,6 +38,11 @@ static void Comm::parseSerial(HardwareSerial *serPtr){
     //ADD ERROR HANDLING HERE
     return;
   }
+
+  if(doc["time"]){
+    data.storeTime(doc["time"]);
+  }
+  
   if(responseExpected)
     if(doc["alive"]){
       responseExpected = false;
@@ -38,7 +51,7 @@ static void Comm::parseSerial(HardwareSerial *serPtr){
       // COMM FAIL ACTION
     }else{
       commFailCount++;
-    }
+  }
     
   // ADD COMMAND HANDLING HERE
 }
