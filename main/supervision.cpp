@@ -42,7 +42,6 @@ static float Supervision::readVoltage_22v(){
   return (input * maxVolts_22v) / analogMax;
 }
 
-// Deenergizes relays, sends a final JSON message, and powers down
 static void Supervision::powerDown(){
   digitalWrite(relayPin_11v, LOW);
   digitalWrite(relayPin_22v, LOW);

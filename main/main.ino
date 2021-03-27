@@ -22,8 +22,3 @@ void loop() {
   }
   Comm::checkSerialBuffer(&Serial);
 }
-
-
-
-//Check power button (persistant)
-//check voltage & send json every n seconeds
