@@ -1,26 +1,28 @@
 #include "supervision.h"
+#include "comm.h"
+#include "data.h"
 
 static void Supervision::supervise(){
   // Records current voltage levels
   float voltage;
   voltage = readVoltage_11v();
-  Comm::appendJson("voltage", 0, voltage);
+  data.storeVoltage_11(voltage);
   if(voltage <= cuttoffVolts_11v){
     //Supervision::powerDown();                   //UNCOMMENT ONCE VOLTAGE SOURCES ARE IN PLACE
   }
     
   voltage = readVoltage_22v();
+  data.storeVoltage_22(voltage);
   if(voltage <= cuttoffVolts_22v){
     //Supervision::powerDown();                   //UNCOMMENT ONCE VOLTAGE SOURCES ARE IN PLACE
   }
-  Comm::appendJson("voltage", 1, voltage);
 
   // Record current relay status
   bool relayStatus;
   relayStatus = digitalRead(relayPin_11v);
-  Comm::appendJson("relay", 0, relayStatus);
+  data.storeRelayStatus_11(relayStatus);
   relayStatus = digitalRead(relayPin_22v);
-  Comm::appendJson("relay", 1, relayStatus);
+  data.storeRelayStatus_22(relayStatus);
 }
 
 static void Supervision::pwrButtonRead() {

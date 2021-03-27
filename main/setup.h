@@ -6,6 +6,7 @@
 /******************************/
 #include <ArduinoJson.h>
 #include "supervision.h"
+#include "data.h"
 
 /******************************/
 /*********PIN NAMES************/
@@ -44,13 +45,13 @@ extern unsigned long prevMillis;
 // Time between sending json doc via serial in milliseconds
 extern const int sendInterval;
 
-// Allocates space for arduinoJson document object. Bool to track if a message has been sent. but a response has not yet occurred.
+// Bool to track if a message has been sent. but a response has not yet occurred.
 // Limit for system to track if comm fails are a problem.
-extern StaticJsonDocument<256> transmitDoc;  //NEED TO GET MORE ACCURATE ALLOCATION SIZE https://arduinojson.org/v6/assistant/
-extern StaticJsonDocument<256> receiveDoc;
 extern bool responseExpected;
 extern int commFailCount;
 extern const int commFailLimit;
+
+extern Data data;
 
 
 #endif

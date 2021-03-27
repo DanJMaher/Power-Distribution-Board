@@ -37,14 +37,13 @@ unsigned long prevMillis = 0;
 // Time between sending json doc via serial in milliseconds
 const int sendInterval = 1000;
 
-// Allocates space for arduinoJson document object. Bool to track if a message has been sent. but a response has not yet occurred.
+//Bool to track if a message has been sent. but a response has not yet occurred.
 // Limit for system to track if comm fails are a problem.
-StaticJsonDocument<256> transmitDoc;  //NEED TO GET MORE ACCURATE ALLOCATION SIZE https://arduinojson.org/v6/assistant/
-StaticJsonDocument<256> receiveDoc;
 bool responseExpected = false;
 int commFailCount = 0;
 const int commFailLimit = 3;
 
+Data data;
 
 void setup() {
   Serial.begin(9600);

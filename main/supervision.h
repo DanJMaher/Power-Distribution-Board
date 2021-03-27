@@ -2,7 +2,7 @@
 #define SUPERVISION_H
 
 #include "setup.h"
-#include "comm.h"
+#include "data.h"
 
 class Supervision{
   public:

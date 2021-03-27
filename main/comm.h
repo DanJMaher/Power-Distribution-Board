@@ -2,14 +2,11 @@
 #define COMM_H
 
 #include "setup.h"
+#include "data.h"
 #include "supervision.h"
 
 class Comm{
   public:
-  // Records values to the json document
-  static void appendJson(String tag, int index, float value);
-  static void appendJson(String tag, int index, bool value);
-
   // Serializes and transmits json doc to
   // specified Serial port
   static void sendJson(HardwareSerial *serPtr);

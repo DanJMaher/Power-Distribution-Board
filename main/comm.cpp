@@ -1,14 +1,17 @@
 #include "comm.h"
 
-static void Comm::appendJson(String tag, int index, float value){
-  transmitDoc[tag][index] = value;
-}
-static void Comm::appendJson(String tag, int index, bool value){
-  transmitDoc[tag][index] = value;
-}
-
 static void Comm::sendJson(HardwareSerial *serPtr){
-    serializeJson(transmitDoc, *serPtr);
+    StaticJsonDocument<256> doc;                      //NEED TO GET MORE ACCURATE ALLOCATION SIZE https://arduinojson.org/v6/assistant/
+
+    //MAKE SEPARATE FUNCTION
+    doc["voltage"][0] = data.retrieveVoltage_11();
+    doc["voltage"][1] = data.retrieveVoltage_22();
+    doc["relay"][0] = data.retrieveRelay_11();
+    doc["relay"][1] = data.retrieveRelay_22();
+    ////////////////////////
+
+    
+    serializeJson(doc, *serPtr);
     serPtr->println();    
     responseExpected = true;
 }
@@ -21,13 +24,14 @@ static void Comm::checkSerialBuffer(HardwareSerial *serPtr){
 }
 
 static void Comm::parseSerial(HardwareSerial *serPtr){
-  DeserializationError err = deserializeJson(receiveDoc, serPtr->readString());
+  StaticJsonDocument<256> doc;                      //NEED TO GET MORE ACCURATE ALLOCATION SIZE https://arduinojson.org/v6/assistant/
+  DeserializationError err = deserializeJson(doc, serPtr->readString());
   if(err) {
     //ADD ERROR HANDLING HERE
     return;
   }
   if(responseExpected)
-    if(receiveDoc["alive"]){
+    if(doc["alive"]){
       responseExpected = false;
       commFailCount = 0;
     }else if(commFailCount == commFailLimit){
