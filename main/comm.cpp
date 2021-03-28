@@ -1,5 +1,29 @@
+/**
+ * comm.cpp
+ * *************************
+ * For Kent State's ATR Lab  
+ * 03/19/2021
+ * Dan Maher
+ * 
+ * Code for operation of revision 1 of the custom 
+ * power distribution board (PDB) PCB 
+ * 
+ * *******************************************************
+ * The Comm (communication) class provides methods to 
+ * generate JSON documents from stored data, send JSON
+ * documents via a serial stream, and monitor an 
+ * incoming serial buffer.
+ * *******************************************************
+**/
+
+/******************************/
+/**********HEADERS*************/
+/******************************/
 #include "comm.h"
 
+/********************************/
+/***********DEFINITIONS**********/
+/********************************/
 static void Comm::sendJson(HardwareSerial *serPtr, JsonDocument *doc){
   serializeJson(*doc, *serPtr);
   serPtr->println();    

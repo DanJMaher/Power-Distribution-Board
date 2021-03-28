@@ -1,5 +1,29 @@
+/**
+ * data.cpp
+ * *************************
+ * For Kent State's ATR Lab  
+ * 03/19/2021
+ * Dan Maher
+ * 
+ * Code for operation of revision 1 of the custom 
+ * power distribution board (PDB) PCB 
+ * 
+ * *******************************************************
+ * The Data class provides a central storage location for
+ * voltage, relay status, and time. The Comm class
+ * generated a JSON document using data stored in a
+ * Data object.
+ * *******************************************************
+**/
+
+/******************************/
+/**********HEADERS*************/
+/******************************/
 #include "data.h"
 
+/********************************/
+/***********DEFINITIONS**********/
+/********************************/
 Data::Data(){
   voltage_11 = 11.1;
   voltage_22 = 22.2;

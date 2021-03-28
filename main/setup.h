@@ -1,3 +1,18 @@
+/**
+ * setup.h
+ * *************************
+ * For Kent State's ATR Lab  
+ * 03/19/2021
+ * Dan Maher
+ * 
+ * Code for operation of revision 1 of the custom 
+ * power distribution board (PDB) PCB 
+ * 
+ * *******************************************************
+ * Pin numbers and globals declarations
+ * *******************************************************
+**/
+
 #ifndef SETUP_H
 #define SETUP_H
 
@@ -53,6 +68,5 @@ extern int commFailCount;
 extern const int commFailLimit;
 
 extern Data data;
-
 
 #endif

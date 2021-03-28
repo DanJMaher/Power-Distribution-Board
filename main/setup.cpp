@@ -1,3 +1,21 @@
+/**
+ * setup.cpp
+ * *************************
+ * For Kent State's ATR Lab  
+ * 03/19/2021
+ * Dan Maher
+ * 
+ * Code for operation of revision 1 of the custom 
+ * power distribution board (PDB) PCB 
+ * 
+ * *******************************************************
+ * Pin numbers, globals, and setup() definitions
+ * *******************************************************
+**/
+
+/******************************/
+/**********HEADERS*************/
+/******************************/
 #include"setup.h"
 
 /******************************/
