@@ -57,7 +57,7 @@ static void Supervision::pwrButtonRead() {
 static float Supervision::readVoltage_11v(){
   digitalWrite(monitorCtrlPin_11v, HIGH);
   float input = analogRead(monitorPin_11v);
-  digitalWrite(monitorCtrlPin_11v, LOW);
+  //digitalWrite(monitorCtrlPin_11v, LOW);
   return (input * maxVolts_11v) / analogMax;
 }
 

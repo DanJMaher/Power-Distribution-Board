@@ -53,7 +53,7 @@ extern const float cuttoffVolts_22v = 17.0;
 // Time tracking
 unsigned long prevMillis = 0;
 // Time between sending json doc via serial in milliseconds
-const int sendInterval = 100;
+const int sendInterval = 1000;
 
 //Bool to track if a message has been sent. but a response has not yet occurred.
 // Limit for system to track if comm fails are a problem.
