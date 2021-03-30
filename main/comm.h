@@ -34,6 +34,11 @@ class Comm{
   // Converts data stored in the Data object to a json doc
   static void sendData(HardwareSerial *serPtr);
 
+  // probably combine this one with sendData later.
+  // Right now it's for special messages when a shutdown
+  // is triggered.
+  static void sendShutdown(HardwareSerial *serPtr, char code[]);
+
   // Creates a json document to request the time
   static void requestTime(HardwareSerial *serPtr);
 

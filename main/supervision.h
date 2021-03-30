@@ -37,13 +37,12 @@ class Supervision{
   // coils and to itself
   static void pwrButtonRead();
 
+  // Deenergizes relays, sends a final JSON message, and powers down
+  static void powerDown(char *code);
+  
   private:
   // Reads voltage pin and maps analog input to real voltage values
   static float readVoltage_11v();
   static float readVoltage_22v();
-
-  // Deenergizes relays, sends a final JSON message, and powers down
-  static void powerDown();
-  
 };
 #endif

@@ -45,7 +45,7 @@ const float maxVolts_11v = 15.0;
 const float maxVolts_22v = 25.0;
 const float analogMax = 1023.0;
 
-// Lower voltage limits before system automatically
+// Minimum voltage limits before system automatically
 // powers down
 extern const float cuttoffVolts_11v = 10.0;
 extern const float cuttoffVolts_22v = 17.0;

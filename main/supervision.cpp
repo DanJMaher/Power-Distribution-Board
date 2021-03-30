@@ -32,13 +32,15 @@ static void Supervision::supervise(){
   voltage = readVoltage_11v();
   data.storeVoltage_11(voltage);
   if(voltage <= cuttoffVolts_11v){
-    //Supervision::powerDown();                   //UNCOMMENT ONCE VOLTAGE SOURCES ARE IN PLACE
+    char *shutdownCode = "auto";
+    //Supervision::powerDown(shutdownCode);                   //UNCOMMENT ONCE VOLTAGE SOURCES ARE IN PLACE
   }
     
   voltage = readVoltage_22v();
   data.storeVoltage_22(voltage);
   if(voltage <= cuttoffVolts_22v){
-    //Supervision::powerDown();                   //UNCOMMENT ONCE VOLTAGE SOURCES ARE IN PLACE
+    char *shutdownCode = "auto";
+    //Supervision::powerDown(shutdownCode);                 //UNCOMMENT ONCE VOLTAGE SOURCES ARE IN PLACE
   }
 
   // Record current relay status
@@ -50,14 +52,16 @@ static void Supervision::supervise(){
 }
 
 static void Supervision::pwrButtonRead() {
-  if(digitalRead(pwrButtonPin) == 0)
-    Supervision::powerDown();
+  if(digitalRead(pwrButtonPin) == 0){
+    char *shutdownCode = "button";
+    Supervision::powerDown(shutdownCode);
+  }
 }
 
 static float Supervision::readVoltage_11v(){
   digitalWrite(monitorCtrlPin_11v, HIGH);
   float input = analogRead(monitorPin_11v);
-  //digitalWrite(monitorCtrlPin_11v, LOW);
+  digitalWrite(monitorCtrlPin_11v, LOW);
   return (input * maxVolts_11v) / analogMax;
 }
 
@@ -68,11 +72,11 @@ static float Supervision::readVoltage_22v(){
   return (input * maxVolts_22v) / analogMax;
 }
 
-static void Supervision::powerDown(){
+static void Supervision::powerDown(char *code){
   digitalWrite(relayPin_11v, LOW);
   digitalWrite(relayPin_22v, LOW);
 
-  Comm::sendData(&Serial);
+  Comm::sendShutdown(&Serial, code);
   digitalWrite(keepOnPin, LOW);
     
   while(1){

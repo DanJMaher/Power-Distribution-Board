@@ -42,6 +42,17 @@ static void Comm::sendData(HardwareSerial *serPtr){
   Comm::sendJson(serPtr, &doc);
 }
 
+static void Comm::sendShutdown(HardwareSerial *serPtr, char code[]){
+  StaticJsonDocument<256> doc;                      //NEED TO GET MORE ACCURATE ALLOCATION SIZE https://arduinojson.org/v6/assistant/
+
+  doc["time"] = data.retrieveTime();
+  doc["SHUTDOWN"] = code;
+  doc["voltage"][0] = data.retrieveVoltage_11();
+  doc["voltage"][1] = data.retrieveVoltage_22();
+
+  Comm::sendJson(serPtr, &doc);
+}
+
 static void Comm::requestTime(HardwareSerial *serPtr){
   StaticJsonDocument<256> doc;                      //NEED TO GET MORE ACCURATE ALLOCATION SIZE https://arduinojson.org/v6/assistant/
   doc["request"] = "time";
@@ -59,12 +70,16 @@ static void Comm::parseSerial(HardwareSerial *serPtr){
   StaticJsonDocument<256> doc;                      //NEED TO GET MORE ACCURATE ALLOCATION SIZE https://arduinojson.org/v6/assistant/
   DeserializationError err = deserializeJson(doc, serPtr->readString());
   if(err) {
-    //ADD ERROR HANDLING HERE
+    //ADD JSON FORMAT ERROR HANDLING HERE
     return;
   }
 
-  if(doc["time"]){
-    data.storeTime(doc["time"]);
+  if(doc["shutdown"] == "now"){
+    char *shutdownCode = "remote";
+    Supervision::powerDown(shutdownCode);
+  }else if(doc["relay"]){
+    digitalWrite(relayPin_11v, doc["relay"][0]);
+    digitalWrite(relayPin_22v, doc["relay"][1]);
   }
   
   if(responseExpected)
@@ -76,6 +91,11 @@ static void Comm::parseSerial(HardwareSerial *serPtr){
     }else{
       commFailCount++;
   }
-    
+
+  if(doc["time"]){
+    data.storeTime(doc["time"]);
+
+  
+  }
   // ADD COMMAND HANDLING HERE
 }
