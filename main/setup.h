@@ -68,5 +68,6 @@ extern int commFailCount;
 extern const int commFailLimit;
 
 extern Data data;
+extern bool serial1Active;
 
 #endif

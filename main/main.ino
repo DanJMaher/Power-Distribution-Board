@@ -31,4 +31,7 @@ void loop() {
     prevMillis = millis();
   }
   Comm::checkSerialBuffer(&Serial);
+  if(serial1Active){
+    Comm::checkSerialBuffer(&Serial1);
+  }
 }

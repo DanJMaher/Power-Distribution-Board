@@ -55,16 +55,22 @@ unsigned long prevMillis = 0;
 // Time between sending json doc via serial in milliseconds
 const int sendInterval = 1000;
 
-//Bool to track if a message has been sent. but a response has not yet occurred.
+// Bool to track if a message has been sent. but a response has not yet occurred.
 // Limit for system to track if comm fails are a problem.
 bool responseExpected = false;
 int commFailCount = 0;
 const int commFailLimit = 3;
 
+
+// If true, system will check Serial1 for incoming commands
+bool serial1Active = true;
+
+// Instantiates a data object to store system status elements
 Data data;
 
 void setup() {
-  Serial.begin(9600);
+  Serial.begin(9600);   //USB serial comm
+  Serial1.begin(9600);  //Wireles serial comm (TX1/RX1)
   
   pinMode(pwrButtonPin, INPUT_PULLUP);
   pinMode(keepOnPin, OUTPUT);
