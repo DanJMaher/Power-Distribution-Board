@@ -24,13 +24,6 @@
 /********************************/
 /***********DEFINITIONS**********/
 /********************************/
-Data::Data(){
-  voltage_11 = 11.1;
-  voltage_22 = 22.2;
-  relay_11 = 0;
-  relay_22 = 0;
-}
-
 void Data::storeTime(unsigned long t){
   storedTime = t;
   storedMillis = millis();

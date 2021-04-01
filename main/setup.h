@@ -19,6 +19,10 @@
 /******************************/
 /**********HEADERS*************/
 /******************************/
+// Won't compile without these forward class declarations
+class Comm;
+class Data;
+
 #include <ArduinoJson.h>
 #include "supervision.h"
 #include "data.h"
@@ -57,17 +61,18 @@ extern const float cuttoffVolts_11v;
 extern const float cuttoffVolts_22v;
 
 // Time tracking
-extern unsigned long prevMillis;
+extern unsigned long prevSendMillis;
+extern unsigned long prevSuperviseMillis;
 // Time between sending json doc via serial in milliseconds
 extern const int sendInterval;
+// Time between checking system state in milliseconds
+extern const int supervisionInterval;
 
-// Bool to track if a message has been sent. but a response has not yet occurred.
-// Limit for system to track if comm fails are a problem.
-extern bool responseExpected;
-extern int commFailCount;
-extern const int commFailLimit;
-
+// Data object to store system status elements
 extern Data data;
-extern bool serial1Active;
+
+// Objects for storing comm path information and sending messages
+extern Comm usb;
+extern Comm wls;
 
 #endif

@@ -22,8 +22,6 @@
 /******************************/
 /**********HEADERS*************/
 /******************************/
-#include "setup.h"
-#include "data.h"
 #include "supervision.h"
 
 /********************************/
@@ -31,26 +29,39 @@
 /********************************/
 class Comm{
   public:
+  // Default Constructor
+  Comm(bool actv, int fl, HardwareSerial *serPtr);
+ 
   // Converts data stored in the Data object to a json doc
-  static void sendData(HardwareSerial *serPtr);
+  void sendData();
 
   // probably combine this one with sendData later.
   // Right now it's for special messages when a shutdown
   // is triggered.
-  static void sendShutdown(HardwareSerial *serPtr, char code[]);
+  void sendShutdown(char code[]);
 
   // Creates a json document to request the time
-  static void requestTime(HardwareSerial *serPtr);
+  void requestTime();
 
   // Checks buffer of specified serial port
-  static void checkSerialBuffer(HardwareSerial *serPtr);
+  void checkSerialBuffer();
 
-  private:
+  //private:
   // Serializes and transmits json doc to specified Serial port
-  static void sendJson(HardwareSerial *serPtr, JsonDocument *doc);
+  void sendJson(JsonDocument *doc);
   
   // Checks for valid JSON data and parses that data
-  static void parseSerial(HardwareSerial *serPtr);
+  void parseSerial();
+
+  // Bool to track if a message has been sent. but a response has not yet occurred.
+  // Limit for system to track if comm fails are a problem.
+  bool responseExpected = 0;
+  int failCount = 0;
+  int failLimit;
+  HardwareSerial *path;
+  bool active;
+  bool stat = false;
+  
 };
 
 #endif

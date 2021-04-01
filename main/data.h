@@ -29,11 +29,6 @@
 /********************************/
 class Data{
   public:
-  // Default constructor, doesn't do anything
-  // important. Default values are overwritten
-  // almost immediately
-  Data();
-
   // Setter for the time retrieved from a host at boot
   void storeTime(unsigned long t);
 

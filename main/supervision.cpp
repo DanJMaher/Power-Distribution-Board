@@ -20,7 +20,6 @@
 /**********HEADERS*************/
 /******************************/
 #include "supervision.h"
-#include "comm.h"
 #include "data.h"
 
 /********************************/
@@ -76,7 +75,10 @@ static void Supervision::powerDown(char *code){
   digitalWrite(relayPin_11v, LOW);
   digitalWrite(relayPin_22v, LOW);
 
-  Comm::sendShutdown(&Serial, code);
+  if(usb.active)
+    usb.sendShutdown(code);         
+  if(wls.active)
+    wls.sendShutdown(code);                                                               
   digitalWrite(keepOnPin, LOW);
     
   while(1){

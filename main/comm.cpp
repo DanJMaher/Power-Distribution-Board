@@ -24,13 +24,23 @@
 /********************************/
 /***********DEFINITIONS**********/
 /********************************/
-static void Comm::sendJson(HardwareSerial *serPtr, JsonDocument *doc){
-  serializeJson(*doc, *serPtr);
-  serPtr->println();    
+Comm::Comm(bool actv, int fl, HardwareSerial *serPtr){
+  active = actv;
+  failLimit = fl;
+  path = serPtr;
+}
+
+void Comm::sendJson(JsonDocument *doc){
+  serializeJson(*doc, *path);
+  path->println();    
   responseExpected = true;
 }
 
-static void Comm::sendData(HardwareSerial *serPtr){
+void Comm::sendData(){
+  if(responseExpected){
+    failCount++;
+    return;
+  }
   StaticJsonDocument<256> doc;                      //NEED TO GET MORE ACCURATE ALLOCATION SIZE https://arduinojson.org/v6/assistant/
 
   doc["time"] = data.retrieveTime();
@@ -38,11 +48,15 @@ static void Comm::sendData(HardwareSerial *serPtr){
   doc["voltage"][1] = data.retrieveVoltage_22();
   doc["relay"][0] = data.retrieveRelay_11();
   doc["relay"][1] = data.retrieveRelay_22();
+  if(usb.active)
+    doc["comm status"][0] = usb.stat;
+  if(wls.active)
+    doc["comm status"][1] = wls.stat;
 
-  Comm::sendJson(serPtr, &doc);
+  Comm::sendJson(&doc);
 }
 
-static void Comm::sendShutdown(HardwareSerial *serPtr, char code[]){
+void Comm::sendShutdown(char code[]){
   StaticJsonDocument<256> doc;                      //NEED TO GET MORE ACCURATE ALLOCATION SIZE https://arduinojson.org/v6/assistant/
 
   doc["time"] = data.retrieveTime();
@@ -50,25 +64,28 @@ static void Comm::sendShutdown(HardwareSerial *serPtr, char code[]){
   doc["voltage"][0] = data.retrieveVoltage_11();
   doc["voltage"][1] = data.retrieveVoltage_22();
 
-  Comm::sendJson(serPtr, &doc);
+  sendJson(&doc);
 }
 
-static void Comm::requestTime(HardwareSerial *serPtr){
+void Comm::requestTime(){
   StaticJsonDocument<256> doc;                      //NEED TO GET MORE ACCURATE ALLOCATION SIZE https://arduinojson.org/v6/assistant/
   doc["request"] = "time";
-  Comm::sendJson(serPtr, &doc);
+  sendJson(&doc);
 }
 
-static void Comm::checkSerialBuffer(HardwareSerial *serPtr){
-  if(serPtr->available() < 1)
+void Comm::checkSerialBuffer(){
+  if(path->available() < 1){
+    if(responseExpected && failCount >= failLimit - 1){
+      stat = false;
+    }
     return;
-
-  parseSerial(serPtr);
+  }
+  parseSerial();
 }
 
-static void Comm::parseSerial(HardwareSerial *serPtr){
+void Comm::parseSerial(){
   StaticJsonDocument<256> doc;                      //NEED TO GET MORE ACCURATE ALLOCATION SIZE https://arduinojson.org/v6/assistant/
-  DeserializationError err = deserializeJson(doc, serPtr->readString());
+  DeserializationError err = deserializeJson(doc, path->readString());
   if(err) {
     //ADD JSON FORMAT ERROR HANDLING HERE
     return;
@@ -82,20 +99,16 @@ static void Comm::parseSerial(HardwareSerial *serPtr){
     digitalWrite(relayPin_22v, doc["relay"][1]);
   }
   
-  if(responseExpected)
+  if(responseExpected){
     if(doc["alive"]){
       responseExpected = false;
-      commFailCount = 0;
-    }else if(commFailCount == commFailLimit){
-      // COMM FAIL ACTION
-    }else{
-      commFailCount++;
+      stat = true;
+      failCount = 0;
+    }
   }
 
   if(doc["time"]){
     data.storeTime(doc["time"]);
-
-  
   }
   // ADD COMMAND HANDLING HERE
 }

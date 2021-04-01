@@ -51,22 +51,29 @@ extern const float cuttoffVolts_11v = 10.0;
 extern const float cuttoffVolts_22v = 17.0;
 
 // Time tracking
-unsigned long prevMillis = 0;
+unsigned long prevSendMillis = 0;
+unsigned long prevSuperviseMillis = 0;
 // Time between sending json doc via serial in milliseconds
 const int sendInterval = 1000;
+// Time between checking system state in milliseconds
+const int supervisionInterval = 1000;
 
-// Bool to track if a message has been sent. but a response has not yet occurred.
-// Limit for system to track if comm fails are a problem.
-bool responseExpected = false;
-int commFailCount = 0;
-const int commFailLimit = 3;
-
-
-// If true, system will check Serial1 for incoming commands
-bool serial1Active = true;
-
-// Instantiates a data object to store system status elements
+// Data object to store system status elements
 Data data;
+
+/******************************/
+/********COMMUNICATION*********/
+/******************************/
+Comm usb(     
+  true,       // Activates USB communication
+  3,          // Max number of failed comm attempts for this path
+  &Serial     // Path
+  );
+Comm wls(    
+  true,        // Activates wireless (Serial1) communication
+  3,           // max number umber of failed comm attempts for this path
+  &Serial1     // Path
+  );
 
 void setup() {
   Serial.begin(9600);   //USB serial comm
@@ -89,5 +96,5 @@ void setup() {
   pinMode(ledPin_22v, OUTPUT);
   digitalWrite(relayPin_22v, HIGH);
 
-  Comm::requestTime(&Serial);
+  usb.requestTime();
 }

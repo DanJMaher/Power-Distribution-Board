@@ -5,7 +5,7 @@
  * 03/19/2021
  * Dan Maher
  * 
- * Code for operation of revision 1 of the custom 
+ * Code for operation of the custom 
  * power distribution board (PDB) PCB 
  * 
  * *******************************************************
@@ -13,25 +13,31 @@
  * *******************************************************
 **/
 
-/******************************/
-/**********HEADERS*************/
-/******************************/
 #include "setup.h"
-#include "comm.h"
 
 /*****************************/
 /************MAIN*************/
 /*****************************/
 void loop() {
+  unsigned long currentMillis = millis();
   Supervision::pwrButtonRead();
-  
-  if(millis() - prevMillis > sendInterval && !responseExpected){
-    Supervision::supervise();
-    Comm::sendData(&Serial);
-    prevMillis = millis();
+
+  if(currentMillis - prevSuperviseMillis > supervisionInterval){
+    Supervision::supervise();   
+    prevSuperviseMillis = currentMillis;
   }
-  Comm::checkSerialBuffer(&Serial);
-  if(serial1Active){
-    Comm::checkSerialBuffer(&Serial1);
+  
+  if(currentMillis - prevSendMillis > sendInterval){
+    if(usb.active)
+      usb.sendData();
+    if(wls.active)
+      wls.sendData();
+    prevSendMillis = currentMillis;
+  }
+
+  if(usb.active)
+    usb.checkSerialBuffer();
+  if(wls.active){
+    wls.checkSerialBuffer();
   }
 }
