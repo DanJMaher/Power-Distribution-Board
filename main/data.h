@@ -34,20 +34,20 @@ class Data{
 
   // Setters for the most recently read voltages
   // and relay statuses
-  void storeVoltage_11(float v);
-  void storeVoltage_22(float v);
-  void storeRelayStatus_11(bool r);
-  void storeRelayStatus_22(bool r);
+  void setVoltage_11(float v);
+  void setVoltage_22(float v);
+  void setRelayStatus_11(bool r);
+  void setRelayStatus_22(bool r);
 
   // Getter for the current system time
   unsigned long retrieveTime();
 
   // Getters for the most recently read voltages
   // and relay statuses
-  float retrieveVoltage_11();
-  float retrieveVoltage_22();
-  bool retrieveRelay_11();
-  bool retrieveRelay_22();
+  float getVoltage_11();
+  float getVoltage_22();
+  bool getRelay_11();
+  bool getRelay_22();
 
   private:
   // Storage for most recently read voltages and

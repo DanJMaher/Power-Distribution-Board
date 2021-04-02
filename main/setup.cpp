@@ -53,13 +53,19 @@ extern const float cuttoffVolts_22v = 17.0;
 // Time tracking
 unsigned long prevSendMillis = 0;
 unsigned long prevSuperviseMillis = 0;
+unsigned long prevDisplayMillis = 0;
 // Time between sending json doc via serial in milliseconds
 const int sendInterval = 1000;
 // Time between checking system state in milliseconds
-const int supervisionInterval = 1000;
+const int supervisionInterval = 100;
+// Time between updating the I2C display
+const int displayInterval = 1000;
 
 // Data object to store system status elements
 Data data;
+
+// Screen object
+Adafruit_SSD1306 display(128, 64, &Wire, -1);
 
 /******************************/
 /********COMMUNICATION*********/
@@ -76,7 +82,7 @@ Comm wls(
   );
 
 void setup() {
-  Serial.begin(9600);   //USB serial comm
+  Serial.begin(115200);   //USB serial comm
   Serial1.begin(9600);  //Wireles serial comm (TX1/RX1)
   
   pinMode(pwrButtonPin, INPUT_PULLUP);
@@ -88,13 +94,16 @@ void setup() {
   pinMode(relayPin_11v, OUTPUT);
   pinMode(ledPin_11v, OUTPUT);
   digitalWrite(monitorCtrlPin_11v, LOW);
-  digitalWrite(relayPin_11v, HIGH);
 
   pinMode(monitorCtrlPin_22v, OUTPUT);
   pinMode(monitorPin_22v,INPUT);
   pinMode(relayPin_22v, OUTPUT);
   pinMode(ledPin_22v, OUTPUT);
-  digitalWrite(relayPin_22v, HIGH);
 
+  // DEFAULT RELAYS TO OFF
+  digitalWrite(relayPin_11v, LOW);
+  digitalWrite(relayPin_22v, LOW);
+
+  //Screen::initializeDisplay();
   usb.requestTime();
 }
