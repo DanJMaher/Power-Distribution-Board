@@ -11,7 +11,7 @@
  * *******************************************************
  * The Data class provides a central storage location for
  * voltage, relay status, and time. The Comm class
- * generated a JSON document using data stored in a
+ * generates a JSON document using data stored in a
  * Data object.
  * *******************************************************
 **/
@@ -34,12 +34,12 @@ unsigned long Data::retrieveTime(){
   return currentTime;
 }
 
-void Data::storeVoltage_11(float v){voltage_11 = v;}
-void Data::storeVoltage_22(float v){voltage_22 = v;}
-void Data::storeRelayStatus_11(bool r){relay_11 = r;}
-void Data::storeRelayStatus_22(bool r){relay_22 = r;}
+void Data::setVoltage_11(float v){voltage_11 = v;}
+void Data::setVoltage_22(float v){voltage_22 = v;}
+void Data::setRelayStatus_11(bool r){relay_11 = r;}
+void Data::setRelayStatus_22(bool r){relay_22 = r;}
 
-float Data::retrieveVoltage_11(){return voltage_11;}
-float Data::retrieveVoltage_22(){return voltage_22;}
-bool Data::retrieveRelay_11(){return relay_11;}
-bool Data::retrieveRelay_22(){return relay_22;}
+float Data::getVoltage_11(){return voltage_11;}
+float Data::getVoltage_22(){return voltage_22;}
+bool Data::getRelay_11(){return relay_11;}
+bool Data::getRelay_22(){return relay_22;}

@@ -44,14 +44,16 @@ void Comm::sendData(){
   StaticJsonDocument<256> doc;                      //NEED TO GET MORE ACCURATE ALLOCATION SIZE https://arduinojson.org/v6/assistant/
 
   doc["time"] = data.retrieveTime();
-  doc["voltage"][0] = data.retrieveVoltage_11();
-  doc["voltage"][1] = data.retrieveVoltage_22();
-  doc["relay"][0] = data.retrieveRelay_11();
-  doc["relay"][1] = data.retrieveRelay_22();
+  doc["voltage"][0] = data.getVoltage_11();
+  doc["voltage"][1] = data.getVoltage_22();
+  doc["relay"][0] = data.getRelay_11();
+  doc["relay"][1] = data.getRelay_22();
   if(usb.active)
     doc["comm status"][0] = usb.stat;
   if(wls.active)
     doc["comm status"][1] = wls.stat;
+    
+  //doc["display status"] = Screen::displayStatus;
 
   Comm::sendJson(&doc);
 }
@@ -61,8 +63,10 @@ void Comm::sendShutdown(char code[]){
 
   doc["time"] = data.retrieveTime();
   doc["SHUTDOWN"] = code;
-  doc["voltage"][0] = data.retrieveVoltage_11();
-  doc["voltage"][1] = data.retrieveVoltage_22();
+  doc["voltage"][0] = data.getVoltage_11();
+  doc["voltage"][1] = data.getVoltage_22();
+  doc["relay"][0] = data.getRelay_11();
+  doc["relay"][1] = data.getRelay_22();
 
   sendJson(&doc);
 }

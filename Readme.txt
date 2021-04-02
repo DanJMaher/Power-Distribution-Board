@@ -26,7 +26,8 @@ INCOMING JSON MESSAGES
 {"time":unsigned long}		-		Current timestamp
 {"voltage:[float,float]}	-		Current voltages (11.1, 22.2)
 {"relay":[bool,bool]}		-		Current relay status (11.1, 22.2)
-{"SHUTDOWN":char*} 		-		System is shutting down for reason:
+{"comm status"[bool, bool]}	-		Current comm status path 1/2 (false is communication failure)
+{"SHUTDOWN":string} 		-		System is shutting down for reason:
 						"auto" - low voltage
 						"remote" - remote serial command
 						"button" - power button was pushed		

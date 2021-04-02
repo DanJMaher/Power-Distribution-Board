@@ -29,14 +29,14 @@ static void Supervision::supervise(){
   // Records current voltage levels
   float voltage;
   voltage = readVoltage_11v();
-  data.storeVoltage_11(voltage);
+  data.setVoltage_11(voltage);
   if(voltage <= cuttoffVolts_11v){
     char *shutdownCode = "auto";
     //Supervision::powerDown(shutdownCode);                   //UNCOMMENT ONCE VOLTAGE SOURCES ARE IN PLACE
   }
-    
+
   voltage = readVoltage_22v();
-  data.storeVoltage_22(voltage);
+  data.setVoltage_22(voltage);
   if(voltage <= cuttoffVolts_22v){
     char *shutdownCode = "auto";
     //Supervision::powerDown(shutdownCode);                 //UNCOMMENT ONCE VOLTAGE SOURCES ARE IN PLACE
@@ -45,9 +45,9 @@ static void Supervision::supervise(){
   // Record current relay status
   bool relayStatus;
   relayStatus = digitalRead(relayPin_11v);
-  data.storeRelayStatus_11(relayStatus);
+  data.setRelayStatus_11(relayStatus);
   relayStatus = digitalRead(relayPin_22v);
-  data.storeRelayStatus_22(relayStatus);
+  data.setRelayStatus_22(relayStatus);
 }
 
 static void Supervision::pwrButtonRead() {
@@ -75,11 +75,13 @@ static void Supervision::powerDown(char *code){
   digitalWrite(relayPin_11v, LOW);
   digitalWrite(relayPin_22v, LOW);
 
+  supervise();
   if(usb.active)
     usb.sendShutdown(code);         
   if(wls.active)
     wls.sendShutdown(code);                                                               
   digitalWrite(keepOnPin, LOW);
+  Screen::updateDisplay(&data);
     
   while(1){
       //Gives time for button to be released and capacitor to
