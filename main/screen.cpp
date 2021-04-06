@@ -34,17 +34,28 @@ static void Screen::initializeDisplay(){
 }
 
 static void Screen::updateDisplay(Data *d){
+
+  // This is supposed to trigger a message to Serial if the display is not
+  // responding, and reinitialize if it comes back online. But it doesn't work 
+  // right because I2C devices freeze the Arduino when disconnected.  
+  // So I'm leaving it in in case I can figure out a fix to this later.
   if(!displayStatus){
     initializeDisplay();
     if(!displayStatus){
       return;
     }
   }
+  ////////////////////////////////////////////////////////////////////////////
   
   display.clearDisplay();
-  Screen::displayVoltage(d->getVoltage_11(), d->getVoltage_22());
-  Screen::displayRelay(d->getRelay_11(), d->getRelay_22());
 
+  readButtons();
+  if(menuMode){
+    displayMenu();
+  }else{
+    Screen::displayVoltage(d->getVoltage_11(), d->getVoltage_22());
+    Screen::displayRelay(d->getRelay_11(), d->getRelay_22());
+  }
   display.display();
 }
 
@@ -76,4 +87,60 @@ static void Screen::displayRelay(bool r_11, bool r_22){
   }
 }
 
+static void Screen::displayMenu(){
+  display.setTextSize(2);
+  display.setCursor(0, 0);
+  display.println("SETTINGS");
+  display.setTextSize(1);
+  display.setCursor(7, 16);
+  display.println("Relay 1");
+  display.setCursor(7, 26);
+  display.println("Relay 2");  
+  display.display();
+  display.setCursor(0, 16 + (menuIndex * 10));
+  display.println('>');
+}
+
+static void Screen::readButtons(){
+  if(!menuMode){
+    if(!digitalRead(centerBtn)){
+      previousCenterState = 0;
+    }else if(digitalRead(centerBtn) && !previousCenterState){
+      menuMode = true;
+      previousCenterState = 1;
+    }else{
+      return;
+    }
+  }
+  
+  if(!digitalRead(centerBtn)){
+    previousCenterState = 0;
+  }else if(digitalRead(centerBtn) && !previousCenterState){
+    previousCenterState = 1;
+  }
+  
+  if(!digitalRead(downBtn)){
+    previousDownState = 0;
+  }else if(digitalRead(downBtn) && !previousDownState){
+    menuIndex = (menuIndex + 1) % 5;
+    previousDownState = 1;
+  }
+
+  if(!digitalRead(upBtn)){
+    previousUpState = 0;
+  }else if(digitalRead(upBtn) && !previousUpState){
+    menuIndex = (((menuIndex - 1) % 5) + 5) % 5;
+    previousUpState = 1;
+    Serial.println(menuIndex);
+  }
+  
+}
+
 bool Screen::displayStatus = false;
+bool Screen::menuMode = false;
+int Screen::previousUpState = 1;
+int Screen::previousDownState = 1;
+int Screen::previousLeftState = 1;
+int Screen::previousRightState = 1;
+int Screen::previousCenterState = 1;
+int Screen::menuIndex = 0;

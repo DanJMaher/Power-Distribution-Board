@@ -51,6 +51,13 @@ extern const int monitorPin_22v;
 extern const int relayPin_22v;
 extern const int ledPin_22v;
 
+// Menu navigation pins
+extern const int upBtn;
+extern const int downBtn;
+extern const int leftBtn;
+extern const int rightBtn;
+extern const int centerBtn;
+
 /******************************/
 /**********GLOBALS*************/
 /******************************/

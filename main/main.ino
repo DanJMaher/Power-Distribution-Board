@@ -31,10 +31,10 @@ void loop() {
   }
 
   // Refresh display
-  if(currentMillis - prevDisplayMillis > displayInterval){
+  //if(currentMillis - prevDisplayMillis > displayInterval){
     Screen::updateDisplay(&data);
     prevDisplayMillis = currentMillis;
-  }
+  //}
 
   // Send serial data
   if(currentMillis - prevSendMillis > sendInterval){
