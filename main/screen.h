@@ -53,15 +53,22 @@ class Screen{
   // Displays the menu if menuMode is active
   static void displayMenu();
 
-  // Button state tracking
-  static int previousUpState;
-  static int previousDownState;
-  static int previousLeftState;
-  static int previousRightState;
-  static int previousCenterState;
+  // Processes button presses depending on current selection
+  static void processPress(int button);
+
+  // Button state tracking (negative logic)
+  static bool previousUpState;
+  static bool previousDownState;
+  static bool previousLeftState;
+  static bool previousRightState;
+  static bool previousCenterState;
 
   // Current menu selection
   static int menuIndex;
+  // Curren menu page
+  static int menuPage;
+  // Number of entries in menu
+  static int menuLength;
 };
 
 #endif

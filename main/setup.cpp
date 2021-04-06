@@ -22,20 +22,20 @@
 /*********PIN NAMES************/
 /******************************/
 // Power Switch Pins
-const int pwrButtonPin = 28;
-const int keepOnPin = 26;
+const int pwrButtonPin = 32;
+const int keepOnPin = 46;
 
 // 11.1V Pins
-const int monitorCtrlPin_11v = 36;
-const int monitorPin_11v = A2;
+const int monitorCtrlPin_11v = 39;
+const int monitorPin_11v = A15;
 const int relayPin_11v = 41;
-const int ledPin_11v = 39;
+const int ledPin_11v = 23;
 
 // 22.2V pins
 const int monitorCtrlPin_22v = 23;
 const int monitorPin_22v = A1;
-const int relayPin_22v = 25;
-const int ledPin_22v = 27;
+const int relayPin_22v = 6;
+const int ledPin_22v = 23;
 
 // Menu navigation pins
 const int upBtn = 2;
