@@ -41,13 +41,15 @@ class Comm{
   // is triggered.
   void sendShutdown(char code[]);
 
+  // Triggered by user menu to send a communication test
+  void sendTestMessage();
+
   // Creates a json document to request the time
   void requestTime();
 
   // Checks buffer of specified serial port
   void checkSerialBuffer();
 
-  //private:
   // Serializes and transmits json doc to specified Serial port
   void sendJson(JsonDocument *doc);
   
@@ -55,14 +57,28 @@ class Comm{
   void parseSerial();
 
   // Bool to track if a message has been sent. but a response has not yet occurred.
-  // Limit for system to track if comm fails are a problem.
   bool responseExpected = 0;
+  // Tracks how many comm fails have occured on this path
   int failCount = 0;
+  // Limit for system to track if comm fails are a problem.
   int failLimit;
-  HardwareSerial *path;
-  bool active;
+  // Tracks whether the path is currently in a fail state (failLimit has been reached)
   bool stat = false;
-  
+  // Serial path that the particular object relys on
+  HardwareSerial *path;
+  // True if the serial path is currently being used. Stored in EEPROM
+  bool active;
+  // Char array that holds the active incoming Serial buffer
+  char buf[256];                                                                                // NEED TO CALCULATE MORE ACCURATE SIZE
+  // Holds the current char array index of the active incoming Serial buffer
+  int bufIndex = 0;
+  // True if there is currently a message in progress. This is known because the '{' char
+  // has been received
+  bool commInProgress = false;
+  const char startChar = '{';
+  const char endChar = '}';
+  // Message number for host tracking
+  int msgNo = 0;
 };
 
 #endif

@@ -30,24 +30,17 @@ static void Supervision::supervise(){
   float voltage;
   voltage = readVoltage_11v();
   data.setVoltage_11(voltage);
-  if(voltage <= cuttoffVolts_11v){
+  if(voltage <= cutoffVolts_11v){
     char *shutdownCode = "auto";
-    //Supervision::powerDown(shutdownCode);                   //UNCOMMENT ONCE VOLTAGE SOURCES ARE IN PLACE
+    Supervision::powerDown(shutdownCode);                   //UNCOMMENT ONCE VOLTAGE SOURCES ARE IN PLACE
   }
 
   voltage = readVoltage_22v();
   data.setVoltage_22(voltage);
-  if(voltage <= cuttoffVolts_22v){
+  if(voltage <= cutoffVolts_22v){
     char *shutdownCode = "auto";
-    //Supervision::powerDown(shutdownCode);                 //UNCOMMENT ONCE VOLTAGE SOURCES ARE IN PLACE
+    Supervision::powerDown(shutdownCode);                   //UNCOMMENT ONCE VOLTAGE SOURCES ARE IN PLACE
   }
-
-  // Record current relay status
-  bool relayStatus;
-  relayStatus = digitalRead(relayPin_11v);
-  data.setRelayStatus_11(relayStatus);
-  relayStatus = digitalRead(relayPin_22v);
-  data.setRelayStatus_22(relayStatus);
 }
 
 static void Supervision::pwrButtonRead() {
@@ -71,20 +64,26 @@ static float Supervision::readVoltage_22v(){
   return (input * maxVolts_22v) / analogMax;
 }
 
-static void Supervision::powerDown(char *code){
-  digitalWrite(relayPin_11v, LOW);
-  digitalWrite(relayPin_22v, LOW);
+static void Supervision::setRelay(int relay, bool condition){
+  if(relay == relayPin_11v){                         // Maybe better to make a relay class to avoid this slop?
+    digitalWrite(relay, condition);
+    digitalWrite(ledPin_11v, condition);
+    data.setRelayStatus_11(condition);
+  }else if(relay == relayPin_22v){
+    digitalWrite(relay, condition);
+    digitalWrite(ledPin_22v, condition);
+    data.setRelayStatus_22(condition);
+  }
+}
 
-  supervise();
+static void Supervision::powerDown(char *code){
+  setRelay(relayPin_11v, false);
+  setRelay(relayPin_22v, false);
+  
   if(usb.active)
     usb.sendShutdown(code);         
   if(wls.active)
     wls.sendShutdown(code);                                                               
   digitalWrite(keepOnPin, LOW);
-  Screen::updateDisplay(&data);
-    
-  while(1){
-      //Gives time for button to be released and capacitor to
-      //discharge, then Arduino will power down
-  }
+  Screen::showShutdown(code);
 }

@@ -38,6 +38,9 @@ class Supervision{
 
   // Deenergizes relays, sends a final JSON message, and powers down
   static void powerDown(char *code);
+
+  // Sets the new status of relay and relay LED
+  static void setRelay(int relay, bool condition);
   
   private:
   // Reads voltage pin and maps analog input to real voltage values
