@@ -23,6 +23,7 @@ REMOTE JSON COMMANDS
 ---------------------------------------------------------------------------
 INCOMING JSON MESSAGES
 ---------------------------------------------------------------------------
+{"msg":int}			-		Message number
 {"time":unsigned long}		-		Current timestamp
 {"voltage:[float,float]}	-		Current voltages (11.1, 22.2)
 {"relay":[bool,bool]}		-		Current relay status (11.1, 22.2)

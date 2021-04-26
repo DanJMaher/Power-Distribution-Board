@@ -9,7 +9,11 @@
  * power distribution board (PDB) PCB 
  * 
  * *******************************************************
- * 
+ * The screen class allows for the operation of an I2C
+ * 128x64 OLED display. In its default state, it provides
+ * the current voltages and status of the relays. It 
+ * also has a menu mode, which allows the user to change
+ * certain settings, some of which are saved in EEPROM.
  * *******************************************************
 **/
 
@@ -33,8 +37,18 @@ class Screen{
   // update the current display
   static void updateDisplay(Data *d);
 
+  // Displays shutdown screen
+  static void showShutdown(char *code);
+  
+  // Reads menu navigation buttons
+  static void readButtons();
+
   // Is display responding
   static bool displayStatus;
+
+  // Is display currently in menu mode
+  static bool menuMode;
+  
 
   private:
   // Prints last read voltages to Screen
@@ -42,6 +56,30 @@ class Screen{
 
   // Prints last read relay status to Screen
   static void displayRelay(bool r_11, bool r_22);
+
+  // Displays the menu if menuMode is active
+  static void displayPage0();
+  static void displayPage1();
+
+  // Processes button presses depending on current selection
+  static void processPress(int button);
+
+  // Button state tracking (negative logic)
+  static bool previousUpState;
+  static bool previousDownState;
+  static bool previousLeftState;
+  static bool previousRightState;
+  static bool previousCenterState;
+
+  // Current menu selection
+  static int menuIndex;
+  // Curren menu page
+  static int menuPage;
+  // Number of entries in menu
+  const static int menuLength;
+
+  //Column Alignmen
+  const static int rightAlign;
 };
 
 #endif

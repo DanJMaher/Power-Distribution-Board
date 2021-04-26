@@ -23,14 +23,23 @@
 class Comm;
 class Data;
 
-// Screen
 #include <Adafruit_SSD1306.h>
-
+#include <EEPROM.h>
 #include <ArduinoJson.h>
+#include <StreamUtils.h>
 #include "supervision.h"
 #include "data.h"
 #include "comm.h"
 #include "screen.h"
+
+/******************************/
+/*******EEPROM ADDRESSES*******/
+/******************************/
+extern const int cutoffVoltsAddress_11v;
+extern const int cutoffVoltsAddress_22v;
+extern const int usbCommActiveAddress;
+extern const int wlsCommActiveAddress;
+extern const int commIntervalAddress;
 
 /******************************/
 /*********PIN NAMES************/
@@ -51,6 +60,13 @@ extern const int monitorPin_22v;
 extern const int relayPin_22v;
 extern const int ledPin_22v;
 
+// Menu navigation pins
+extern const int upBtn;
+extern const int downBtn;
+extern const int leftBtn;
+extern const int rightBtn;
+extern const int centerBtn;
+
 /******************************/
 /**********GLOBALS*************/
 /******************************/
@@ -61,15 +77,15 @@ extern const float analogMax;
 
 // Lower voltage limits before system automatically
 // powers down
-extern const float cuttoffVolts_11v;
-extern const float cuttoffVolts_22v;
+extern float cutoffVolts_11v;
+extern float cutoffVolts_22v;
 
 // Time tracking
 extern unsigned long prevSendMillis;
 extern unsigned long prevSuperviseMillis;
 extern unsigned long prevDisplayMillis;
 // Time between sending json doc via serial in milliseconds
-extern const int sendInterval;
+extern int sendInterval;
 // Time between checking system state in milliseconds
 extern const int supervisionInterval;
 // Time between updating the I2C display
