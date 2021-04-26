@@ -3,7 +3,7 @@ Updated 3/29/21 - Dan Maher
 
 Basic use:
 1) Plug in an Arduino, send the code. 
-2) run serial_comm.py (for basic communication)
+2) run serial_comm.py (for basic communication) or power_monitor_pub.py for ROS integration on the 'power' topic.
 
 When it boots, the Arduino tries to send a JSON message via serial:
 {"request":"time"}
@@ -23,10 +23,12 @@ REMOTE JSON COMMANDS
 ---------------------------------------------------------------------------
 INCOMING JSON MESSAGES
 ---------------------------------------------------------------------------
+{"msg":int}			-		Message number
 {"time":unsigned long}		-		Current timestamp
 {"voltage:[float,float]}	-		Current voltages (11.1, 22.2)
 {"relay":[bool,bool]}		-		Current relay status (11.1, 22.2)
-{"SHUTDOWN":char*} 		-		System is shutting down for reason:
+{"comm status"[bool, bool]}	-		Current comm status path 1/2 (false is communication failure)
+{"SHUTDOWN":string} 		-		System is shutting down for reason:
 						"auto" - low voltage
 						"remote" - remote serial command
 						"button" - power button was pushed		

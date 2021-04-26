@@ -2,7 +2,7 @@ import serial
 from datetime import datetime
 import json
 
-ser = serial.Serial('COM6', baudrate = 9600, timeout = 7)
+ser = serial.Serial('COM9', baudrate = 115200, timeout = 7)
 
 while 1:
         arduinoData = ser.readline().decode("ascii")
