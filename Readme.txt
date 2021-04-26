@@ -3,7 +3,7 @@ Updated 3/29/21 - Dan Maher
 
 Basic use:
 1) Plug in an Arduino, send the code. 
-2) run serial_comm.py (for basic communication)
+2) run serial_comm.py (for basic communication) or power_monitor_pub.py for ROS integration on the 'power' topic.
 
 When it boots, the Arduino tries to send a JSON message via serial:
 {"request":"time"}
