@@ -22,16 +22,25 @@ The serial_comm.py program is just for troubleshooting, and copies the incoming/
 REMOTE JSON COMMANDS
 ---------------------------------------------------------------------------
 {"relay":[bool, bool]}		-		Sets individual relays to on/off
+
 {"time":unsigned long}		-		Sync system time with long (in seconds)
+
 {"shutdown":"now"}		-		Shuts down the system with code "remote"
+
 ---------------------------------------------------------------------------
 INCOMING JSON MESSAGES
 ---------------------------------------------------------------------------
+
 {"msg":int}			-		Message number
+
 {"time":unsigned long}		-		Current timestamp
+
 {"voltage:[float,float]}	-		Current voltages (11.1, 22.2)
+
 {"relay":[bool,bool]}		-		Current relay status (11.1, 22.2)
+
 {"comm status"[bool, bool]}	-		Current comm status path 1/2 (false is communication failure)
+
 {"SHUTDOWN":string} 		-		System is shutting down for reason:
 							"auto" - low voltage
 							"remote" - remote serial command
